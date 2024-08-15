@@ -1,0 +1,17 @@
+.lobby-container {
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.chat-box {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+}

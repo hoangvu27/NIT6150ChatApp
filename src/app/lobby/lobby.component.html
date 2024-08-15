@@ -1,0 +1,9 @@
+<div class="lobby-container">
+  <h2>Lobby</h2>
+  <div class="chat-box">
+    <div *ngFor="let message of messages">
+      <strong>{{message.sender}}:</strong> {{message.text}}
+    </div>
+  </div>
+  <input [(ngModel)]="messageText" placeholder="Type a message..." (keydown.enter)="sendMessage()">
+</div>
