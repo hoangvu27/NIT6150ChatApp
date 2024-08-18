@@ -18,65 +18,61 @@ import { UserService } from '../services/user.service';
 export class HomeComponent {
   socket: WebSocket | null = null;
   username: string = '';
-  //constructor(private router: Router, private userService: UserService) { }
+  constructor(private router: Router, private userService: UserService, @Inject(PLATFORM_ID) private platformId: Object) { }
 
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
-  //constructor(private router: Router) { }
+  //constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit(): void {
-    // Establish WebSocket connection when the home page loads
-    //this.socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
-
-    //this.socket.onopen = () => {
-    //  console.log('WebSocket connection established in home page.');
-    //};
-
-    //this.socket.onmessage = (event) => {
-    //  console.log('Message received:', event.data);
-    //};
-
-    //this.socket.onclose = () => {
-    //  console.log('WebSocket connection closed.');
-    //};
-
-    // Check if the platform is a browser (because WebSocket is only available in the browser)
+    // Only run WebSocket-related code in the browser environment
     if (isPlatformBrowser(this.platformId)) {
-      // Only run WebSocket code in the browser environment
-      this.socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
+      let socket = this.userService.getSocket();
 
-      this.socket.onopen = () => {
-        console.log('WebSocket connection established in home page.');
-      };
+      // If no socket exists yet, create a new one
+      if (!socket) {
+        socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
+        this.userService.setSocket(socket);
 
-      this.socket.onmessage = (event) => {
-        console.log('Message received:', event.data);
-      };
+        socket.onopen = () => {
+          console.log('WebSocket connection established.');
+        };
 
-      this.socket.onclose = () => {
-        console.log('WebSocket connection closed.');
-      };
+        socket.onmessage = (event) => {
+          console.log('Message received:', event.data);
+        };
+
+        socket.onclose = () => {
+          console.log('WebSocket connection closed.');
+        };
+      }
+    } else {
+      console.log('WebSocket is not supported on the server-side.');
     }
   }
 
-  //startChat() {
-  //  if (this.username.trim()) {
-  //    this.userService.setUsername(this.username);
-  //    this.router.navigate(['/lobby']);
-  //  }
-  //}
 
   startChat() {
-    if (this.username.trim() && this.socket) {
-      const message = {
-        action: 'joinLobby',  // Custom action for joining the lobby
-        username: this.username
-      };
-      this.socket.send(JSON.stringify(message));
-      console.log('Join lobby message sent:', message);
+    if (this.username.trim()) {
+      // Ensure WebSocket is established in the browser environment
+      if (isPlatformBrowser(this.platformId)) {
+        const socket = this.userService.getSocket();
 
-      // Navigate to the lobby after sending the message
-      localStorage.setItem('username', this.username);
-      this.router.navigate(['/lobby']);
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          const message = {
+            action: 'joinLobby',
+            username: this.username
+          };
+          socket.send(JSON.stringify(message));
+          console.log('Join lobby message sent:', message);
+
+          // Store the username in sessionStorage
+          sessionStorage.setItem('username', this.username);
+
+          // Navigate to the lobby
+          this.router.navigate(['/lobby']);
+        } else {
+          console.log('WebSocket is not open.');
+        }
+      }
     }
   }
 
