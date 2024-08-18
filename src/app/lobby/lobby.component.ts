@@ -29,8 +29,10 @@ export class LobbyComponent implements OnInit {
     //  console.log("Running on the server, skipping localStorage and sessionStorage access");
     //}
       // Retrieve the username from localStorage
-    this.username = localStorage.getItem('username') ?? '';
+    //this.username = localStorage.getItem('username') ?? '';
+    this.username = sessionStorage.getItem('username') ?? '';
     this.socket = this.userService.getSocket();
+    console.log(this.username);
 
     if (!this.username || !this.socket) {
       // Redirect back to home if username or WebSocket is not present
