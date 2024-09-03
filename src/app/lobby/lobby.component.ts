@@ -31,7 +31,8 @@ export class LobbyComponent implements OnInit {
     //  console.log("Running on the server, skipping localStorage and sessionStorage access");
     //}
     //this.username = localStorage.getItem('username') ?? '';
-    this.username = sessionStorage.getItem('username') ?? '';
+    let usernameFromService = this.userService.getUsername();
+    this.username = usernameFromService ? usernameFromService : sessionStorage.getItem('username') ?? '';
     console.log(this.username);
     this.socket = this.userService.getSocket();
 

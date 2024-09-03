@@ -39,6 +39,12 @@ export class HomeComponent implements OnInit {
         socket.onopen = () => {
           console.log('WebSocket connection established.');
         };
+        socket.onopen = () => {
+          console.log('WebSocket connection established.');
+        };
+        socket.onclose = () => {
+          console.log('WebSocket connection closed');
+        };
       }
     }
   }
@@ -93,6 +99,8 @@ export class HomeComponent implements OnInit {
 
         // Store the username in sessionStorage
         sessionStorage.setItem('username', this.username);
+        this.userService.setUsername(this.username);
+        console.log(this.username)
 
         // Navigate to the lobby
         this.router.navigate(['/lobby']);
