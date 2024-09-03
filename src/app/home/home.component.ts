@@ -31,6 +31,15 @@ export class HomeComponent implements OnInit {
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
+      let socket = this.userService.getSocket();
+      if (!socket) {
+        socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
+        this.userService.setSocket(socket);
+
+        socket.onopen = () => {
+          console.log('WebSocket connection established.');
+        };
+      }
     }
   }
 
@@ -53,7 +62,6 @@ export class HomeComponent implements OnInit {
           const parsedBody = JSON.parse(res.body);
           if (parsedBody.success === true) {
             (window as any).grecaptcha.reset(); // Reset the widget
-            sessionStorage.setItem('username', this.username);
             this.handleSuccessfulCaptcha();
           } else {
             alert('CAPTCHA verification failed. Please try again.');
@@ -72,6 +80,25 @@ export class HomeComponent implements OnInit {
 
   private handleSuccessfulCaptcha() {
     // Add your logic to navigate to lobby or perform further actions
-    this.router.navigate(['/lobby']);
+    if (isPlatformBrowser(this.platformId)) {
+      const socket = this.userService.getSocket();
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        const message = {
+          action: 'joinLobby',
+          username: this.username
+        };
+        socket.send(JSON.stringify(message));
+        //console.log('Join lobby message sent:', message);
+
+        // Store the username in sessionStorage
+        sessionStorage.setItem('username', this.username);
+
+        // Navigate to the lobby
+        this.router.navigate(['/lobby']);
+      } else {
+        console.log('WebSocket is not open.');
+      }
+    }
   }
 }

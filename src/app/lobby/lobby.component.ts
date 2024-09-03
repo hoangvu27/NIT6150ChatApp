@@ -32,6 +32,7 @@ export class LobbyComponent implements OnInit {
     //}
     //this.username = localStorage.getItem('username') ?? '';
     this.username = sessionStorage.getItem('username') ?? '';
+    console.log(this.username);
     this.socket = this.userService.getSocket();
 
     if (!this.username || !this.socket) {
