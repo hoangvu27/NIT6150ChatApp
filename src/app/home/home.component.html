@@ -1,9 +1,14 @@
+<!--<script src="https://www.google.com/recaptcha/api.js" async defer></script>-->
+
 <div class="home-container">
   <h2>Welcome to the Chat App</h2>
   <form (ngSubmit)="startChat()">
     <div>
       <input [(ngModel)]="username" name="username" placeholder="Enter your name" required>
     </div>
+    <!-- Remove this v3 script -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdUfDUqAAAAAKozxocfCWsvXmvONMkmFgR0MKFB"></script>
+    <!--<div class="g-recaptcha" data-sitekey=""></div>-->
     <button type="submit">Start Chat</button>
   </form>
 </div>

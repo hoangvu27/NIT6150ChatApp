@@ -6,14 +6,16 @@ import { CommonModule } from '@angular/common'; // Import CommonModule
 import { isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router'; // Import RouterModule, not Router
 import { UserService } from '../services/user.service';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],  // Add FormsModule and CommonModule to imports
+  imports: [FormsModule, CommonModule, RouterModule, HttpClientModule],  
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  providers: [UserService]
 })
 export class HomeComponent {
   socket: WebSocket | null = null;
@@ -52,28 +54,54 @@ export class HomeComponent {
 
   startChat() {
     if (this.username.trim()) {
-      // Ensure WebSocket is established in the browser environment
-      if (isPlatformBrowser(this.platformId)) {
-        const socket = this.userService.getSocket();
+      // Check if grecaptcha exists
+      if ((window as any).grecaptcha) {
+        // Ensure reCAPTCHA is ready before getting response
+        (window as any).grecaptcha.ready(() => {
+          const recaptchaResponse = (window as any).grecaptcha.getResponse();
 
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          const message = {
-            action: 'joinLobby',
-            username: this.username
-          };
-          socket.send(JSON.stringify(message));
-          //console.log('Join lobby message sent:', message);
+          if (!recaptchaResponse) {
+            alert('Please complete the CAPTCHA');
+            return;
+          }
 
-          // Store the username in sessionStorage
-          sessionStorage.setItem('username', this.username);
+          // Send the reCAPTCHA response to your server for verification
+          this.userService.verifyCaptcha(recaptchaResponse).subscribe({
+            next: (res) => {
+              if (res.success) {
+                if (isPlatformBrowser(this.platformId)) {
+                  const socket = this.userService.getSocket();
 
-          // Navigate to the lobby
-          this.router.navigate(['/lobby']);
-        } else {
-          console.log('WebSocket is not open.');
-        }
+                  if (socket && socket.readyState === WebSocket.OPEN) {
+                    const message = {
+                      action: 'joinLobby',
+                      username: this.username
+                    };
+                    socket.send(JSON.stringify(message));
+                    console.log('Join lobby message sent:', message);
+
+                    sessionStorage.setItem('username', this.username);
+                    this.router.navigate(['/lobby']);
+                  } else {
+                    console.log('WebSocket is not open.');
+                  }
+                }
+              } else {
+                alert('CAPTCHA verification failed. Please try again.');
+              }
+            },
+            error: (error) => {
+              alert(error.message); // Display error message to the user
+            }
+          });
+        });
+      } else {
+        // Handle case when grecaptcha is not loaded
+        console.error('reCAPTCHA is not loaded. Please check your setup.');
       }
     }
   }
+
+
 
 }
