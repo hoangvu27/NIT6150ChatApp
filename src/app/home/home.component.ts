@@ -58,10 +58,17 @@ export class HomeComponent {
 
           this.userService.verifyCaptcha(recaptchaResponse).subscribe({
             next: (res: any) => {
-              if (res.success) {
-                this.handleSuccessfulCaptcha();
-              } else {
-                alert('CAPTCHA verification failed. Please try again.');
+              console.log('CAPTCHA verification response:', res);
+              try {
+                const parsedBody = JSON.parse(res.body);
+                if (parsedBody.success === true) {
+                  this.handleSuccessfulCaptcha();
+                } else {
+                  alert('CAPTCHA verification failed. Please try again.');
+                }
+              } catch (error) {
+                console.error('Error parsing response:', error);
+                alert('An error occurred while verifying CAPTCHA. Please try again.');
               }
             },
             error: (error) => {
