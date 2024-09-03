@@ -28,19 +28,24 @@ export class UserService {
     return this.socket;
   }
 
-  // Implement the verifyCaptcha method
-  verifyCaptcha(recaptchaResponse: string): Observable<{ success: boolean }> {
-    // Replace '/verify-captcha' with your actual backend endpoint that handles CAPTCHA verification
-    return this.http.post<{ success: boolean }>('/verify-captcha', { recaptchaResponse });
+  // Method to verify the reCAPTCHA response with the backend
+  verifyCaptcha(recaptchaResponse: string): Observable<any> {
+    const url = 'https://cz7ykaqk6g.execute-api.ap-southeast-2.amazonaws.com/production/verify-captcha'; // Replace with your actual backend URL
+    return this.http.post(url, { response: recaptchaResponse }).pipe(
+      catchError(this.handleError) // Handle errors gracefully
+    );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 403) {
-      // Handle CAPTCHA failure specifically
-      return throwError(() => new Error('CAPTCHA verification failed.'));
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side or network error
+      errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Handle other errors
-      return throwError(() => new Error('An unexpected error occurred.'));
+      // Server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }
