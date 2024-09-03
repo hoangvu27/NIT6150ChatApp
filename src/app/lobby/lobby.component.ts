@@ -16,6 +16,8 @@ export class LobbyComponent implements OnInit {
   username: string = '';
   messageText: string = '';
   messages: { sender: string, text: string }[] = [];
+  lobbyCount: number = 0;  // Add this line to your LobbyComponent class
+
 
   // Declare the socket property
   private socket: WebSocket | null = null;
@@ -28,15 +30,12 @@ export class LobbyComponent implements OnInit {
     //} else {
     //  console.log("Running on the server, skipping localStorage and sessionStorage access");
     //}
-      // Retrieve the username from localStorage
     //this.username = localStorage.getItem('username') ?? '';
     this.username = sessionStorage.getItem('username') ?? '';
     this.socket = this.userService.getSocket();
-    console.log(this.username);
 
     if (!this.username || !this.socket) {
       // Redirect back to home if username or WebSocket is not present
-      console.log('back to home page');
       this.router.navigate(['/']);
       return;
     } else {
@@ -47,9 +46,13 @@ export class LobbyComponent implements OnInit {
         }
 
         this.socket.onmessage = (event) => {
-          console.log('Message received:', event.data);
           const data = JSON.parse(event.data);
-          this.addMessage({ sender: data.sender, text: data.message });
+          if (data.type === 'lobbyCountUpdate') {
+            this.lobbyCount = data.count;  // Update the lobby count from the server
+            console.log(this.lobbyCount);
+          } else {
+            this.addMessage({ sender: data.sender, text: data.message });
+          }
         };
         this.socket.onopen = () => {
           console.log('WebSocket connection established.');

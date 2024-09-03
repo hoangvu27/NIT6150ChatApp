@@ -1,5 +1,5 @@
 <div class="lobby-container">
-  <h2>Lobby</h2>
+  <h2>Lobby ({{ lobbyCount }} users online)</h2>  <!-- Add lobbyCount display -->
   <div class="chat-box">
     <div *ngFor="let message of messages">
       <strong>{{message.sender}}:</strong> {{message.text}}

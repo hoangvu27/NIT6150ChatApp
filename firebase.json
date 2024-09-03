@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/chat-app/browser",
+    "public": "dist/chat-app",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -9,7 +9,7 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/maintenance.html"
+        "destination": "/index.html"
       }
     ]
   }

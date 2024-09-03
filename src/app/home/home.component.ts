@@ -37,11 +37,11 @@ export class HomeComponent {
         };
 
         socket.onmessage = (event) => {
-          console.log('Message received:', event.data);
+          //console.log('Message received:', event.data);
         };
 
         socket.onclose = () => {
-          console.log('WebSocket connection closed.');
+          //console.log('WebSocket connection closed.');
         };
       }
     } else {
@@ -62,7 +62,7 @@ export class HomeComponent {
             username: this.username
           };
           socket.send(JSON.stringify(message));
-          console.log('Join lobby message sent:', message);
+          //console.log('Join lobby message sent:', message);
 
           // Store the username in sessionStorage
           sessionStorage.setItem('username', this.username);
