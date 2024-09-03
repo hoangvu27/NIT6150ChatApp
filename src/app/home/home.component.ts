@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit {
           const parsedBody = JSON.parse(res.body);
           if (parsedBody.success === true) {
             (window as any).grecaptcha.reset(); // Reset the widget
+            sessionStorage.setItem('username', this.username);
             this.handleSuccessfulCaptcha();
           } else {
             alert('CAPTCHA verification failed. Please try again.');
