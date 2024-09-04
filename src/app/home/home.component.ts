@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
   standalone: true,  // Add standalone: true here
-  imports: [FormsModule, CommonModule, HttpClientModule],  // Ensure FormsModule is correctly imported here
+  imports: [FormsModule, CommonModule ],  // Ensure FormsModule is correctly imported here
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   providers: [UserService]
@@ -32,19 +31,20 @@ export class HomeComponent implements OnInit {
       script.defer = true;
       document.body.appendChild(script);
       let socket = this.userService.getSocket();
+      console.log(socket)
       if (!socket) {
-        socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
-        this.userService.setSocket(socket);
-
-        socket.onopen = () => {
-          console.log('WebSocket connection established.');
-        };
-        socket.onopen = () => {
-          console.log('WebSocket connection established.');
-        };
-        socket.onclose = () => {
-          console.log('WebSocket connection closed');
-        };
+        //socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
+        //this.userService.setSocket(socket);
+        //console.log(this.userService.getSocket());
+        //socket.onopen = () => {
+        //  console.log('WebSocket connection established.');
+        //};
+        //socket.onopen = () => {
+        //  console.log('WebSocket connection established.');
+        //};
+        //socket.onclose = () => {
+        //  console.log('WebSocket connection closed');
+        //};
       }
     }
   }

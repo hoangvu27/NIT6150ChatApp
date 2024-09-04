@@ -9,8 +9,13 @@ import { catchError } from 'rxjs/operators';
 export class UserService {
   private username: string = '';
   private socket: WebSocket | null = null;
+  private instanceCount = 0;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.instanceCount++;
+    this.socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
+    console.log(`UserService instance count: ${this.instanceCount}`);
+  }
 
   setUsername(username: string) {
     this.username = username;
