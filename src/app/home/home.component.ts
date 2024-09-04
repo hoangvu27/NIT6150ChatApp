@@ -11,10 +11,10 @@ import { UserService } from '../services/user.service';
   imports: [FormsModule, CommonModule ],  // Ensure FormsModule is correctly imported here
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  providers: [UserService]
 })
 export class HomeComponent implements OnInit {
   username: string = '';
+  private connectionId: string | null = null;
 
   constructor(
     private router: Router,
@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+
       // Dynamically load reCAPTCHA script
       const script = document.createElement('script');
       script.src = 'https://www.google.com/recaptcha/api.js';
@@ -31,20 +32,26 @@ export class HomeComponent implements OnInit {
       script.defer = true;
       document.body.appendChild(script);
       let socket = this.userService.getSocket();
-      console.log(socket)
       if (!socket) {
-        //socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
-        //this.userService.setSocket(socket);
-        //console.log(this.userService.getSocket());
-        //socket.onopen = () => {
-        //  console.log('WebSocket connection established.');
-        //};
-        //socket.onopen = () => {
-        //  console.log('WebSocket connection established.');
-        //};
-        //socket.onclose = () => {
-        //  console.log('WebSocket connection closed');
-        //};
+        socket = new WebSocket('wss://uebygl936h.execute-api.ap-southeast-2.amazonaws.com/production/');
+        this.userService.setSocket(socket);
+        socket.onopen = () => {
+          console.log('WebSocket connection established.');
+        };
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.connectionId) {
+            this.connectionId = data.connectionId;
+            // Check for null before storing in sessionStorage
+            if (this.connectionId) {
+              sessionStorage.setItem('connectionId', this.connectionId);
+              console.log('Connection ID stored in session:', this.connectionId);
+            }
+          }
+        };
+        socket.onclose = () => {
+          console.log('WebSocket connection closed');
+        };
       }
     }
   }
