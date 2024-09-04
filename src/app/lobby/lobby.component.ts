@@ -3,12 +3,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';  // Import FormsModule
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { UserService } from '../services/user.service';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
   selector: 'app-lobby',
   standalone: true,
-  imports: [FormsModule, CommonModule],  // Add FormsModule and CommonModule to imports
+  imports: [FormsModule, CommonModule, HttpClientModule],  // Add FormsModule and CommonModule to imports
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.scss']
 })
