@@ -1,0 +1,23 @@
+chat-app/
+├── src/                # Your Angular app source code
+├── aws/                # AWS-related files
+│   ├── lambdas/        # Lambda function scripts
+│   │   ├── function1/
+│   │   │   ├── index.py
+│   │   │   └── requirements.txt
+│   │   ├── function2/
+│   │   │   ├── index.js
+│   │   │   └── package.json
+├	  ── configs/        
+│   │   ├── joinLobby.yaml
+│   │   ├── dynamodb-schema.json
+│   │   ├── iam-policies.json
+│   │   ├── rest-api-swagger.json           # REST API configuration
+│   │   ├── websocket-api-openapi.json      # WebSocket API configuration
+|    ── scripts/
+│   ├── dynamodb/       # DynamoDB schema files or scripts
+│   ├── iam/            # IAM policies (JSON format)
+│   ├── s3/             # References to S3 files if needed
+│   └── cloudwatch/     # Scripts to manage CloudWatch logs if necessary
+├── README.md
+└── other_project_files

@@ -33,11 +33,7 @@ export class LobbyComponent implements OnInit {
     //this.username = localStorage.getItem('username') ?? '';
     let usernameFromService = this.userService.getUsername();
     this.username = usernameFromService ? usernameFromService : sessionStorage.getItem('username') ?? '';
-    console.log(this.username);
     this.socket = this.userService.getSocket();
-    console.log(!this.socket)
-    console.log(this.socket)
-    console.log(sessionStorage.getItem('connectionId') )
 
     if (!this.username || !this.socket) {
       // Redirect back to home if username or WebSocket is not present

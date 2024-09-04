@@ -1,0 +1,16 @@
+Go to AWS console
+Log in with authentication
+Search for "DynamoDB", click "DynamoDB"
+Click "Tables" on the left tab
+Click "Create Table" button
+
+Table name: WebSocketConnections
+Partition key: connectionId
+
+Table name: ChatMessages
+Partition key: MessageId
+
+// The below table has not been implemeneted
+Table name: ChatConnections
+Partition key: ConnectionId 
+

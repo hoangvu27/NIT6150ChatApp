@@ -38,22 +38,35 @@ export class HomeComponent implements OnInit {
         socket.onopen = () => {
           console.log('WebSocket connection established.');
         };
-        socket.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          if (data.connectionId) {
-            this.connectionId = data.connectionId;
-            // Check for null before storing in sessionStorage
-            if (this.connectionId) {
-              sessionStorage.setItem('connectionId', this.connectionId);
-              console.log('Connection ID stored in session:', this.connectionId);
-            }
-          }
+        socket.onmessage = (event) => {  // probably because cdode onopen is duplicating twice
+          
         };
         socket.onclose = () => {
           console.log('WebSocket connection closed');
         };
       }
     }
+  }
+
+  downloadApp(app: string): void {
+    if (!this.isMobileDevice()) {
+      alert('Use phone to download app.');
+      return; // Stop the download if not on a mobile device
+    }
+
+    let url = '';
+    if (app === 'app1') {
+      url = 'https://music-management-app.s3.amazonaws.com/app-release.apk'; // Use your actual S3 URL
+    } else if (app === 'app2') {
+      url = 'https://fish-card-game.s3.ap-southeast-2.amazonaws.com/app-release.apk'; // Use your actual S3 URL
+    }
+    window.open(url, '_blank'); // Opens the APK download link in a new tab
+  }
+
+  isMobileDevice(): boolean {
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    // Check for common mobile user agent strings
+    return /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
   }
 
   startChat() {
