@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit {
     // Add your logic to navigate to lobby or perform further actions
     if (isPlatformBrowser(this.platformId)) {
       const socket = this.userService.getSocket();
-
+      
       if (socket && socket.readyState === WebSocket.OPEN) {
         const message = {
           action: 'joinLobby',
@@ -100,8 +100,8 @@ export class HomeComponent implements OnInit {
         // Store the username in sessionStorage
         sessionStorage.setItem('username', this.username);
         this.userService.setUsername(this.username);
-        console.log(this.username)
-
+        console.log(socket)
+        console.log("aha")
         // Navigate to the lobby
         this.router.navigate(['/lobby']);
       } else {
